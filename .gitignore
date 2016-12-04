@@ -9,9 +9,12 @@
 
 # Ignore all logfiles and tempfiles.
 /log/*
-/tmp/*
 !/log/.keep
-!/tmp/.keep
+/tmp
 
-# Ignore Byebug command history file.
-.byebug_history
+# Ignore idea files
+/.idea
+/public/system/*
+
+#ignore .DS_Store files
+.DS_Store
