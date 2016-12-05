@@ -15,7 +15,7 @@ class Api::V1::QuoteRequestController < ApplicationController
     auth = "authToken="+params[:auth_token]
     p auth.to_s
     options = {:fromCode => "BOM", :toCode => "LHR", :fromType => "A", :toType => "A", :date => "2016-12-08", :maxConnections => 1, :daysOut=>0, :connectionType => "same", :excludeCodeShare => false, :includeFlight => true, :includeFreighter => true, :includeRFS=>false, :includeTrain =>false, :carriers => ""}
-    response = RestClient.get(url, {:Authorization => auth.to_s, params: options, :content_type => :json, :accept => :json})
+    response = RestClient.get(url, {params: options, :Authorization => auth, :content_type => :json, :accept => :json})
     return response
   end
 end
