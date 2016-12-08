@@ -7,6 +7,7 @@ class CreateQuoteRequests < ActiveRecord::Migration[5.0]
       t.string :incoterms
       t.string :to_address
       t.string :from_address
+      t.string :service_type
       t.json :packages
       t.decimal :shipment_valuation
       t.boolean :hazardous?

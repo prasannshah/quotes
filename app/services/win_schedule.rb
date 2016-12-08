@@ -35,7 +35,7 @@ class WinSchedule
     $redis.set("win_token", token)
   end
 
-  def self.fetch_schedules
+  def self.fetch_schedules(params)
     win_token = get_win_token
     if win_token.nil?
       if authorize?
@@ -44,7 +44,7 @@ class WinSchedule
         return UNAUTHORIZED
       end
     end
-    schedules = internal_fetch_schedule(win_token)
+    schedules = internal_fetch_schedule(win_token, params)
     if schedules == ERROR
       if authorize?
         win_token= get_win_token
@@ -56,10 +56,12 @@ class WinSchedule
     schedules
   end
 
-  def self.internal_fetch_schedule(token)
+  def self.internal_fetch_schedule(token, params)
     auth = "authToken="+token
     cookies = {authToken: token}
-    options = {:fromCode => "BOM", :toCode => "LHR", :fromType => "A", :toType => "A", :date => "2016-12-12", :minCT => 2, :maxCT => 12, :maxConnections => 1, :daysOut=>0, :connectionType => "S", :excludeCodeShare => false, :viaPorts => "", :includeFlight => true, :includeFreighter => true, :includeRFS=>true, :includeTrain =>true, :carriers => ""}
+    fix_options = { :fromType => "A", :toType => "A", :minCT => 2, :maxCT => 12, :maxConnections => 1, :daysOut=>0, :connectionType => "S", :excludeCodeShare => false, :viaPorts => "", :includeFlight => true, :includeFreighter => true, :includeRFS=>true, :includeTrain =>true, :carriers => ""}
+    # params = {:fromCode => "BOM", :toCode => "LHR", :date => "2016-12-12" }
+    options = fix_options.merge(params)
     url = "#{SCHEDULE_URL}?#{options.to_query}"
     begin
       response = RestClient.get(url, {authorization: auth, cookies: cookies, content_type: 'application/json', accept: 'application/json'})
