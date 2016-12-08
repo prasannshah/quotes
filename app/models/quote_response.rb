@@ -1,0 +1,3 @@
+class QuoteResponse
+
+end
