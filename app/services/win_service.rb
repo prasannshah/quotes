@@ -1,4 +1,4 @@
-class WinSchedule
+class WinService
   WIN_USER_NAME = 'systemuser@logistixian.com'
   WIN_PASSWORD = 'win123456'
   UNAUTHORIZED = 'unauthorized'
@@ -51,7 +51,7 @@ class WinSchedule
       else
         return UNAUTHORIZED
       end
-      schedules = internal_fetch_schedule(win_token)
+      schedules = internal_fetch_schedule(win_token, params)
     end
     schedules
   end
@@ -59,14 +59,14 @@ class WinSchedule
   def self.internal_fetch_schedule(token, params)
     auth = "authToken="+token
     cookies = {authToken: token}
-    fix_options = { :fromType => "A", :toType => "A", :minCT => 2, :maxCT => 12, :maxConnections => 1, :daysOut=>0, :connectionType => "S", :excludeCodeShare => false, :viaPorts => "", :includeFlight => true, :includeFreighter => true, :includeRFS=>true, :includeTrain =>true, :carriers => ""}
+    fix_options = { :fromType => "A", :toType => "A", :minCT => 2, :maxCT => 12, :maxConnections => 0, :daysOut=>0, :connectionType => "S", :excludeCodeShare => false, :viaPorts => "", :includeFlight => true, :includeFreighter => true, :includeRFS=>true, :includeTrain =>true, :carriers => ""}
     # params = {:fromCode => "BOM", :toCode => "LHR", :date => "2016-12-12" }
     options = fix_options.merge(params)
     url = "#{SCHEDULE_URL}?#{options.to_query}"
     begin
       response = RestClient.get(url, {authorization: auth, cookies: cookies, content_type: 'application/json', accept: 'application/json'})
       set_win_token(response.cookies["authToken"])
-      return response
+      return response.body
     rescue Exception => e
       Rails.logger.error e.message
       return ERROR

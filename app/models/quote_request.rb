@@ -1,4 +1,4 @@
 class QuoteRequest < ApplicationRecord
   #Field Definitions
-  enum service_type: [:PP, :PD, :DP, :DD]
+  enum transit_type: {air: 'air', ocean: 'ocean'}
 end
