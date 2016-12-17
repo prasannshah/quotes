@@ -10,27 +10,47 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161208102236) do
+ActiveRecord::Schema.define(version: 20161217050939) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "hstore"
 
   create_table "quote_requests", force: :cascade do |t|
+    t.string   "transit_type"
+    t.string   "requester"
+    t.string   "commodity"
     t.hstore   "port_of_loading"
     t.hstore   "port_of_discharge"
-    t.string   "incoterms"
     t.string   "to_address"
     t.string   "from_address"
-    t.json     "packages"
+    t.json     "air_packages"
     t.decimal  "shipment_valuation"
-    t.boolean  "hazardous?"
-    t.boolean  "insurance?"
-    t.boolean  "temp_controlled?"
-    t.string   "other_services",                  array: true
-    t.datetime "shipment_date"
-    t.datetime "created_at",         null: false
-    t.datetime "updated_at",         null: false
+    t.boolean  "hazardous"
+    t.boolean  "insurance"
+    t.boolean  "temp_controlled"
+    t.integer  "min_temperature"
+    t.integer  "max_temperature"
+    t.hstore   "other_services_charges"
+    t.datetime "shipment_ready_date"
+    t.datetime "shipment_clearance_date"
+    t.string   "carrier_preference"
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+  end
+
+  create_table "quote_responses", force: :cascade do |t|
+    t.integer  "quote_request_id"
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
+    t.index ["quote_request_id"], name: "index_quote_responses_on_quote_request_id", using: :btree
+  end
+
+  create_table "quotes", force: :cascade do |t|
+    t.integer  "quote_response_id"
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
+    t.index ["quote_response_id"], name: "index_quotes_on_quote_response_id", using: :btree
   end
 
 end
